@@ -62,6 +62,7 @@ void display_cart()
 // Updates stock and cart databases accordingly.
 void add_to_cart(char *rfid)
 {
+    int cnt = 0;
     // Find product index in stock database
     int index = find_product(rfid);
 
@@ -70,22 +71,34 @@ void add_to_cart(char *rfid)
         printf("\nINVALID RFID\n");
         return;
     }
-
-    if(db[index].stock <= 0) // Out of stock
+    int len = strlen(rfid);
+    p[j] = calloc(1,len);
+    strcpy(p[j],rfid);
+    j++;
+    for(int i = 0;i < j; i++)
     {
-        printf("\nOUT OF STOCK\n");
-        return;
+        if(strcmp(p[i],rfid)==0)
+        {
+            cnt++;
+            if(!(cnt <= db[index].stock))
+            {
+                printf("\nOUT OF STOCK\n");
+                j--;
+                return;
+            }
+        }
     }
-
-    // Check if product already exists in cart
     for(int i=0; i<cart_size; i++)
     {
+        if(db[index].stock <= 0) // Out of stock
+        {
+            printf("\nOUT OF STOCK\n");
+            return;
+        }
+   
         if(strcmp(cart[i].id, rfid) == 0)
         {
             qty[i]++;              // Increment quantity in cart
-            //db[index].stock--;     // Decrement stock
-            //update_stock();        // Save stock changes
-            update_cart();         // Save cart changes
             printf("\nPRODUCT UPDATED\n");
             return;
         }
@@ -95,12 +108,6 @@ void add_to_cart(char *rfid)
     cart[cart_size] = db[index];   // Copy product details into cart
     qty[cart_size] = 1;            // Set initial quantity
     cart_size++;                   // Increase cart size
-  //  db[index].stock--;             // Decrement stock
-
-    // Save updates
-    //update_stock();
-    update_cart();
-
     printf("\nPRODUCT ADDED\n");
 }
 
@@ -119,14 +126,24 @@ void delete_product(char *rfid)
         return;
     }
 
+    for(int k = 0; k < j;k++)
+    {
+        if(strcmp(p[k],rfid)==0)
+        {
+            for(int i = k; i < j-1; i++)
+            {
+                p[i] = p[i+1];            
+            }
+            j--;
+            break;
+        }
+    }        
     // Search for product in cart
     for(int i=0; i<cart_size; i++)
     {
         if(strcmp(cart[i].id, rfid) == 0) // Match found in cart
         {
             qty[i]--;              // Decrement quantity in cart
-            //db[index].stock++;     // Increment stock in database (return item to stock)
-
             // If quantity becomes zero or less, remove product from cart
             if(qty[i] <= 0)
             {
