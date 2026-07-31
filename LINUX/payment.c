@@ -52,18 +52,34 @@ chance:         memset(buf, 0, sizeof(buf));          // Clear buffer
                     if(b[i].balance >= total) // Check sufficient balance
                     {
                         b[i].balance -= total;   // Deduct bill amount
-			for(int k = 0; k < cart_size; k++)
-			{
-				int db_idx = find_product(cart[k].id);
-				if(db_idx != 1)
-					db[db_idx].stock -= qty[k];
-			}
-			update_stock();
+			            update_stock();
                         update_bank();           // Save updated balance to bank.csv
                         save_sales(card_no,"ONLINE"); // Record transaction in sales
+						char *rfid;
+						for(int k = 0; k<j;k++)
+						{
+							rfid = p[k];
+							int index = find_product(rfid);
+							int num = 0;
+							if(num == 0)
+							{
+								for(int i = 0; i < db_size; i++)
+								{
+									if(strcmp(db[i].id,rfid)==0)
+									{
+										db[i].stock--;
+										update_stock();
+										update_cart();
+										break;
+									}
+								}		
+								num++;
+							}
+						}		
+						j = 0;
                         cart_size = 0;           // Clear cart after payment
 
-                        uart_str_tx("SUCCESSFUL");  // Notify UART
+                        uart_str_tx("SUCCESS");  // Notify UART
                         uart_tx('$');
                         printf("PAYMENT SUCCESSFULLY COMPLETED\n");
                         return;
@@ -73,6 +89,8 @@ chance:         memset(buf, 0, sizeof(buf));          // Clear buffer
                         printf("Payment failed due to less balance\n");
                         uart_str_tx("LOW_BAL");
                         uart_tx('$');
+						j = 0;
+						cart_size = 0;
                         return;
                     }
                 }
@@ -87,11 +105,10 @@ chance:         memset(buf, 0, sizeof(buf));          // Clear buffer
                         printf("Card Blocked\n");
                         printf("Switch to Cash Payment\n");
                         sleep(1);
-                        // transaction_cash(); // Optional: trigger cash payment
                         return;
                     }
                     printf("Payment failed\n");
-		    printf("WRONG PIN\n");
+		            printf("WRONG PIN\n");
                     uart_str_tx("RETRY"); // Ask for retry
                     uart_tx('$');
                     goto chance; // Retry PIN input
@@ -112,6 +129,7 @@ chance:         memset(buf, 0, sizeof(buf));          // Clear buffer
 // Purpose: Handles payment in cash mode. Sends total bill to UART, waits for confirmation, and records sale.
 void transaction_cash(void)
 {
+	int cnt = 0;
     char buf[50];   // Buffer for UART communication
     int total = 0;  // Total bill amount
 
@@ -129,31 +147,46 @@ void transaction_cash(void)
 
     // --- Receive payment result ---
 l1: memset(buf, 0, sizeof(buf)); // Clear buffer
+	cnt++;
     uart_str_rx(buf, sizeof(buf)); // Receive result from UART
-    printf("Received Result:%s\n", buf);
+	if(cnt != 1)
+          printf("Received Result:%s\n", buf);
 
     int result = atoi(buf); // Convert received string to integer
 
     // --- SUCCESS case ---
     if(result == 1)
     {
-	for(int k = 0; k < cart_size; k++)
-	{
-		int db_idx = find_product(cart[k].id);
-		if(db_idx != -1)
-			db[db_idx].stock -= qty[k];
-	}
-	update_stock();
         save_sales("CASH","CASH"); // Record transaction as cash payment
+		char *rfid;
+		for(int k = 0; k < j; k++)
+		{
+			rfid = p[k];
+			int index = find_product(rfid);
+			for(int i =0;i<db_size;i++)
+			{
+				if(strcmp(db[i].id,rfid)==0)
+				{
+					db[i].stock--;
+					update_stock();
+					update_cart();
+				}
+			}
+		}
+		j = 0;
         cart_size = 0;             // Clear cart after payment
         printf("PAID SUCCESSFULLY\n");
+		cnt = 0;
         return;
     }
     // --- FAILURE case ---
     else
     {
-        printf("Payment Failed\n");
-	printf("Due to Less amount\n");
+		if(cnt != 1)
+		{
+             printf("Payment Failed\n");
+	        printf("Due to Less amount\n");
+		}
         goto l1; // Retry until payment succeeds
     }
 }
