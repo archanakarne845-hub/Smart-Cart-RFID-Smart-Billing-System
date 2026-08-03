@@ -303,7 +303,7 @@ Example RFID data:
 <img src="images/image10.jpeg" width="700"/>
 <img src="images/image11.jpeg" width="700"/>
 <img src="images/image12.jpeg" width="700"/>
-<img src="images/image6.jpeg" width="700"/>
+<img src="images/image13.jpeg" width="700"/>
 
 </p>
 
