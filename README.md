@@ -299,7 +299,7 @@ Example RFID data:
 <img src="images/image6.jpeg" width="700"/>
 <img src="images/image7.jpeg" width="700"/>
 <img src="images/image8.jpeg" width="700"/>
-<img src="images/image6.jpeg" width="700"/>
+<img src="images/image9.jpeg.jpeg" width="700"/>
 <img src="images/image6.jpeg" width="700"/>
 <img src="images/image6.jpeg" width="700"/>
 <img src="images/image6.jpeg" width="700"/>
