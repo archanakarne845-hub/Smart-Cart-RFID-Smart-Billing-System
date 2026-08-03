@@ -290,7 +290,7 @@ Example RFID data:
 
 <img src="images/image2.jpeg" width="700"/>
 
-<img src="images/image3.png" width="700"/>
+<img src="images/image3.jpeg" width="700"/>
 
 <img src="images/image4.png" width="700"/>
 
