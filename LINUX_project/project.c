@@ -230,10 +230,13 @@ void display_bank()
 // UPDATE BANK
 void update_bank()
 {
+	// Open bank.csv in write mode.
     FILE *fp = fopen("bank.csv","w");
+	// Write the CSV column headings.
     fprintf(fp,"card_id,place,ifsc_code,bank_name,acc_no,balance,pin\n");
     for(int i=0;i<bank_size;i++)
     {
+		// Write bank details into the CSV file.
         fprintf(fp,"%s,%s,%s,%s,%s,%ld,%s\n",
 			b[i].card_id,
 			b[i].place,
@@ -251,11 +254,16 @@ int find_product(char *rfid)
 {
     for(int i=0;i<db_size;i++)
     {
+		// Compare the received RFID/card ID with
+        // the card ID stored in the stock database.
         if(strcmp(db[i].id,rfid)==0)
         {
+			// Matching card found.
+            // Return its index in the stock array.
             return i;
         }
     }
+	// No matching card was found.
     return -1;
 }
 
@@ -264,20 +272,28 @@ int find_bank(char *rfid)
 {
     for(int i=0;i<bank_size;i++)
     {
+		// Compare the received RFID/card ID with
+        // the card ID stored in the bank database.
         if(strcmp(b[i].card_id,rfid)==0)
         {
+			// Matching card found.
+            // Return its index in the bank array.
             return i;
         }
     }
+	// No matching card was found.
     return -1;
 }
 // UPDATE CART FILE
 void update_cart()
 {
+	// Open cart.csv in write mode.
     FILE *fp = fopen("cart.csv","w");
+	 // Write the CSV column headings.
     fprintf(fp,"item,rfid,quantity,price,total\n");
     for(int i=0;i<cart_size;i++)
     {
+		 // Write product details into the CSV file.
         fprintf(fp,"%s,%s,%d,%.2f,%.2f\n",
 			cart[i].name,
 			cart[i].id,
@@ -285,6 +301,7 @@ void update_cart()
 			cart[i].price,
 			qty[i] * cart[i].price);
     }
+	// Close the file after updating the cart.
     fclose(fp);
 }
 
@@ -312,13 +329,17 @@ void add_to_cart(char *rfid)
 
     if(index == -1)
     {
+		// RFID is not present in the product database.
         printf("\nINVALID RFID\n");
         return;
     }
-    
+    // Find the length of the received RFID string.
     int len = strlen(rfid);
+	// Allocate memory for storing the RFID.
     p[j] = calloc(1,len);
+	// Copy the received RFID into the allocated memory.
     strcpy(p[j],rfid);
+	// Move to the next RFID storage position.
     j++;
     
     for(int i = 0; i < j; i++)
@@ -326,8 +347,11 @@ void add_to_cart(char *rfid)
         if(strcmp(p[i],rfid)==0)
         {
             cnt++;
+			// Check whether the number of scans exceeds
+            // the available stock.
             if(!(cnt <= db[index].stock))
             {
+				// Product is not available in sufficient quantity.
                 printf("\nOUT OF STOCK\n");
                 j--;
                 return;
@@ -337,8 +361,10 @@ void add_to_cart(char *rfid)
 
     for(int i = 0; i < cart_size; i++)
     {
+		 // Check whether the product has no stock remaining.
          if(db[index].stock <= 0)
          {
+			
               printf("\nOUT OF STOCK\n");
               return;
          }
