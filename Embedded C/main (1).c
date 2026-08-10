@@ -53,11 +53,19 @@ int main()
     // Infinite loop
     while(1)
     {
+	// Check whether the cash payment flag is set.
 	if(switch_to_cash==1)
 	{
+	 // Clear the flag after detecting the request.
+	// This prevents the cash payment function from
+	// being repeatedly called.
 	switch_to_cash=0;
+	// Start the cash payment process.
 	cash_payment_frontend();
 	}
+		 // Continuously check for RFID operations.
+        // This function handles RFID scanning, product
+        // identification, cart operations, and billing.
         RFID();
     }
 }
