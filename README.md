@@ -59,7 +59,7 @@ Customers simply scan RFID-tagged products to add or remove items from the cart.
 
 <p align="center">
 
-<img src="images/system architecture.png" width="850"/>
+<img src="images/system Architecture.png" width="850"/>
 
 </p>
 
