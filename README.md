@@ -286,7 +286,7 @@ Example RFID data:
 
 <p align="center">
 
-<img src="images/software workflow.png" width="800"/>
+<img src="images/complete work flow.png" width="800"/>
 
 </p>
 
