@@ -282,7 +282,7 @@ Example RFID data:
 
 ---
 
-# 🔄 Software Flow
+# 🔄 Complete System Flowchart
 
 <p align="center">
 
