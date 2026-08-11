@@ -173,7 +173,7 @@ Customers simply scan RFID-tagged products to add or remove items from the cart.
 
 <p align="center">
 
-<img src="images/payment workflow.png" width="800"/>
+<img src="images/payment work flow.png" width="800"/>
 
 </p>
 
