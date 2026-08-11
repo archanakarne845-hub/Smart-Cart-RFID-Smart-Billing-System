@@ -282,6 +282,16 @@ Example RFID data:
 
 ---
 
+# 🔄 Software Flow
+
+<p align="center">
+
+<img src="images/software workflow.png" width="800"/>
+
+</p>
+
+---
+
 # 📸 Project Gallery
 
 <p align="center">
